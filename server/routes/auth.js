@@ -5,8 +5,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
 router.post("/register", async (req, res) => {
-    console.log('headers', req.headers);
-    console.log('body', req.body);
+
     const {email, password, displayName} = req.body
 
     if (!email || !password || !displayName)
@@ -38,6 +37,7 @@ router.post("/register", async (req, res) => {
 
 
 router.post("/login", async (req, res) => {
+    
     const {email, password} = req.body
 
     const user = await User.findOne({email})
@@ -46,9 +46,9 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ message: "Invalid credentials" })
     }
 
-    const isValid = bcrypt.compare(password, user.passwordHash)
+    const isValid = await bcrypt.compare(password, user.passwordHash)
 
-    if (!user) {
+    if (!isValid) {
     return res.status(400).json({ message: "Invalid credentials" })
     }
 
